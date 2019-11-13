@@ -46,8 +46,8 @@ if zxz
    eu=[-2;-2];
    return
 end
-q1=q(1:n-nunstab,:);
-q2=q(n-nunstab+1:n,:);
+q1=q(1:n-nunstab,:)
+q2=q(n-nunstab+1:n,:)
 z1=z(:,1:n-nunstab)';
 z2=z(:,n-nunstab+1:n)';
 a2=a(n-nunstab+1:n,n-nunstab+1:n);
@@ -135,6 +135,7 @@ else
 %   return;
 end
 tmat = [eye(n-nunstab) -(ueta*(deta\veta')*veta1*deta1*ueta1')'];
+disp((ueta*(deta\veta')*veta1*deta1*ueta1')')
 G0= [tmat*a; zeros(nunstab,n-nunstab) eye(nunstab)];
 G1= [tmat*b; zeros(nunstab,n)];
 %----------------------
@@ -149,6 +150,7 @@ impact=G0I*[tmat*q*psi;zeros(nunstab,size(psi,2))];
 fmat=b(usix,usix)\a(usix,usix);
 fwt=-b(usix,usix)\q2*psi;
 ywt=G0I(:,usix);
+z*G1
 %-------------------- above are output for system in terms of z'y -------
 G1=real(z*G1*z');
 C=real(z*C);
