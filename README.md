@@ -3,6 +3,10 @@ Solving Systems of Linear Rational Expectations Equations in Julia
 
 ## Installation
 
+This command installs LRESolve
+
+`import Pkg; Pkg.add("LRESolve")`
+
 ## Methods
 
 ### Sims (2001)
