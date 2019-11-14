@@ -50,7 +50,7 @@ module LRESolve
         Θ = H*vcat(topΘ, (Ω22-Λ22)\Q2)*M.C
         Θ₀ = H*vcat(topΘ, zeros(n-ns,n))*M.Ψ
 
-        return (Θ, Θ₁, Θ₀)
+        return (Θ, Θ₀, Θ₁)
 
     end
 
