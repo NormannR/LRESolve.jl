@@ -35,3 +35,7 @@ M = ModelSims(Γ₀,Γ₁,C,Ψ,Π)
 ```julia
 Θ, Θ₀, Θ₁ = solve_sims(M)
 ```
+
+The different methods can be tested using Binder.
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/NormannR/LRESolve.jl.git/master)
