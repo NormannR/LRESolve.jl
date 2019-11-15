@@ -1,18 +1,17 @@
-# LRESolve
+# LRESolve.jl
+
 Solving Systems of Linear Rational Expectations Equations in Julia
 
 ## Installation
 
-This command installs LRESolve
-
-`import Pkg; Pkg.add("LRESolve")`
+You may install LRESolve.jl using `import Pkg; Pkg.add("https://github.com/NormannR/LRESolve.jl.git")`
 
 ## Methods
 
 ### Sims (2001)
 [Sims (2001)](https://ideas.repec.org/c/dge/qmrbcd/11.html) solves LRE systems of the form
 
-![image](https://normannrion.fr/wp-content/uploads/2019/11/sims_eq.png)
+![image](https://normannrion.fr/wp-content/uploads/2019/11/sims_eq_def.png)
 
 where 
 

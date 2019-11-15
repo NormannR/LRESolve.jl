@@ -2,7 +2,7 @@ module LRESolve
 
     using LinearAlgebra
 
-    export ModelSims, solve_sims
+    export ModelSims, solve_sims, ModelUhlig, solve_uhlig
 
     struct ModelSims
         Γ₀::Array{Float64,2}
@@ -53,5 +53,53 @@ module LRESolve
         return (Θ, Θ₀, Θ₁)
 
     end
+
+    function quadeq(Ψ::Array{Float64,2},Γ::Array{Float64,2},Θ::Array{Float64,2})
+
+        m = size(Ψ,2)
+        Ξ = zeros(2*m,2*m)
+        Δ = zeros(2*m,2*m)
+
+        Ξ[1:m,1:m] .= Γ
+        Ξ[1:m,m+1:end] .= Θ
+        Ξ[m+1:end,1:m] .= I(m)
+
+        Δ[1:m,1:m] .= Ψ
+        Δ[m+1:end,m+1:end] .= I(m)
+
+        V = eigen(Ξ,Δ)
+
+        perm = sortperm(abs.(V.values))
+        λ = V.values[perm[1:m]]
+
+        if any(abs.(λ) .> 1)
+            warning("The solution is unstable")
+        end
+
+        Λ = diagm(λ)
+        Ω = V.vectors[m+1:end,perm[1:m]]
+        return Ω*Λ*inv(Ω)
+
+    end
+
+    struct ModelUhlig
+        F::Array{Float64,2}
+        G::Array{Float64,2}
+        H::Array{Float64,2}
+        L::Array{Float64,2}
+        M::Array{Float64,2}
+        N::Array{Float64,2}
+    end
+
+    function solve_uhlig(X::ModelUhlig)
+
+        P = quadeq(X.F,-X.G,-X.H)
+        V = kron(transpose(X.N),X.F) + kron(I(size(X.N,1)),X.F*P+X.G)
+        Q = V \ (-vec(X.L*X.N+X.M))
+
+        return (P,Q)
+
+    end
+
 
 end # module
