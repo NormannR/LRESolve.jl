@@ -13,8 +13,6 @@ This command installs LRESolve
 ### Sims (2001)
 [Sims (2001)](https://ideas.repec.org/c/dge/qmrbcd/11.html) solves LRE systems of the form
 
-![image](https://normannrion.fr/wp-content/uploads/2019/11/sims_eq.png)
-
 where 
 
 - x is the vector of endogenous variables
