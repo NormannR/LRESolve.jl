@@ -1,8 +1,10 @@
+__precompile__()
+
 module LRESolve
 
     using LinearAlgebra
 
-    export ModelSims, solve_sims, ModelUhlig, solve_uhlig
+    export ModelSims, solve_sims, ModelUhlig, solve_uhlig, ModelAM, solve_am
 
     struct ModelSims
         Γ₀::Array{Float64,2}
@@ -102,23 +104,23 @@ module LRESolve
     end
 
 
-    struct AMModel
+    struct ModelAM
         τ::Int64
         θ::Int64
         L::Int64
         H::Array{Float64,2}
     end
 
-    function AMModel(τ::Int64,θ::Int64,VectH::Vector{Array{Float64,2}},Ψ::Array{Float64,2})       
+    function ModelAM(τ::Int64,θ::Int64,VectH::Vector{Array{Float64,2}})       
         L = size(VectH[1],1)
         H = zeros(L,L*(τ+θ+1))
         for i = 1:τ+θ+1
             H[:,(i-1)*L+1:i*L] = VectH[i]
         end
-        return AMModel(τ,θ,L,H)    
+        return ModelAM(τ,θ,L,H)    
     end
 
-    function checkrank(M::AMModel)
+    function checkrank(M::ModelAM)
         S = zeros(M.L,M.L)
         for i = 1:M.τ+M.θ+1
             S += M.H[:,(i-1)*M.L+1:i*M.L]
@@ -130,12 +132,12 @@ module LRESolve
         end
     end
 
-    function l_inv_subset(A)
+    function l_inv_subset(A::Array{Float64,2})
         F = eigen(copy(transpose(A)))
         return transpose(F.vectors[:,abs.(F.values) .> 1])
     end
 
-    function aux_init_cond(M)
+    function aux_init_cond(M::ModelAM)
 
         H = M.H
         Z = zeros(0,M.L*(M.τ+M.θ))
@@ -175,7 +177,7 @@ module LRESolve
 
     end
 
-    function solve_am(M::AMModel)
+    function solve_am(M::ModelAM)
 
         if ~checkrank(M)
             error("The steady state is not unique !")
