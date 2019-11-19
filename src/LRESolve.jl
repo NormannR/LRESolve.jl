@@ -102,4 +102,100 @@ module LRESolve
     end
 
 
+    struct AMModel
+        τ::Int64
+        θ::Int64
+        L::Int64
+        H::Array{Float64,2}
+    end
+
+    function AMModel(τ::Int64,θ::Int64,VectH::Vector{Array{Float64,2}},Ψ::Array{Float64,2})       
+        L = size(VectH[1],1)
+        H = zeros(L,L*(τ+θ+1))
+        for i = 1:τ+θ+1
+            H[:,(i-1)*L+1:i*L] = VectH[i]
+        end
+        return AMModel(τ,θ,L,H)    
+    end
+
+    function checkrank(M::AMModel)
+        S = zeros(M.L,M.L)
+        for i = 1:M.τ+M.θ+1
+            S += M.H[:,(i-1)*M.L+1:i*M.L]
+        end
+        if rank(S) == M.L
+            return true
+        else
+            return false
+        end
+    end
+
+    function l_inv_subset(A)
+        F = eigen(copy(transpose(A)))
+        return transpose(F.vectors[:,abs.(F.values) .> 1])
+    end
+
+    function aux_init_cond(M)
+
+        H = M.H
+        Z = zeros(0,M.L*(M.τ+M.θ))
+        Hθ = M.H[:,(M.τ+M.θ)*M.L+1:end]
+
+        k = 0
+
+        F = svd(Hθ)
+        r = count(F.S .> 0.)
+
+        while (size(Z,1) < M.L*(M.τ+M.θ)) & (r < M.L)
+
+            perm = sortperm(F.S)
+
+            H = transpose(F.U[:,perm])*H
+            q = H[1:M.L-r,1:M.L*(M.τ+M.θ)]
+            Z = vcat(Z,q)
+
+            H[1:M.L-r,1:M.L] = zeros(M.L-r,M.L)
+            H[1:M.L-r,M.L+1:end] = q
+
+            Hθ = H[:,(M.τ+M.θ)*M.L+1:end]
+
+            F = svd(Hθ)
+            r = count(F.S .> 0.)
+
+            k += 1
+
+        end
+
+        Γ = - Hθ\H[:,1:M.L*(M.τ+M.θ)]
+        A = zeros(M.L*(M.τ+M.θ),M.L*(M.τ+M.θ))
+        A[1:M.L*(M.τ+M.θ-1),M.L+1:end] .= I(M.L*(M.τ+M.θ-1))
+        A[M.L*(M.τ+M.θ-1)+1:end,:] .= Γ
+
+        return (A,Z)
+
+    end
+
+    function solve_am(M::AMModel)
+
+        if ~checkrank(M)
+            error("The steady state is not unique !")
+        end
+
+        A,Z = aux_init_cond(M)
+
+        Q = vcat(Z,l_inv_subset(A))
+        QL = Q[:,1:M.L*M.τ]
+        QR = Q[:,M.L*M.τ+1:end]
+        n = size(Q,1)
+
+        if (n<M.L*M.τ) || (rank(QR) < n)
+            error("Non-unique solution")
+        elseif n > M.L*M.τ
+            error("No convergent solution")
+        end
+
+        return -Real.(QR\QL)
+
+    end
+
 end # module
