@@ -4,9 +4,10 @@ Solving Systems of Linear Rational Expectations Equations in Julia
 
 ## Installation
 
-This command installs the latest LRESolve.jl
+These commands install the latest version of LRESolve.jl
 
-`import Pkg; Pkg.add("https://github.com/NormannR/LRESolve.jl.git")`
+- `import Pkg; Pkg.add("https://github.com/NormannR/LRESolve.jl.git")`
+- `import Pkg; Pkg.add("LRESolve.jl")`
 
 ## Methods
 
@@ -33,6 +34,7 @@ M0 = ModelSims(Γ₀,Γ₁,C,Ψ,Π)
 ```
 
 2. Call the `solve_sims` method over the newly created model
+
 ```julia
 Θ, Θ₀, Θ₁ = solve_sims(M0)
 ```
@@ -62,6 +64,7 @@ M0 = ModelUhlig(F,G,H,L,M,N)
 ```
 
 2. Call the `solve_uhlig` method over the newly created model
+
 ```julia
 P,Q = solve_uhlig(M0)
 ```
@@ -89,6 +92,7 @@ M0 = ModelAM(τ,θ,[Hmτ,...,Hθ])
 ```
 
 2. Call the `solve_am` method over the newly created model
+
 ```julia
 B = solve_am(M0)
 ```

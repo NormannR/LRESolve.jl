@@ -1,7 +1,7 @@
 name = "LRESolve"
 uuid = "ee29a0df-cd28-4477-a8c7-b2df1281527b"
 authors = ["NormannR <normannrion@gmail.com>"]
-version = "0.3.0"
+version = "0.2.0"
 
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
@@ -10,3 +10,4 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
 julia = "1.2"
+BenchmarkTools = "0.4.3"
